@@ -1,0 +1,37 @@
+{
+  "name": "Разработка сайтов | Интернет-магазинов | Сергей Тарасенко",
+  "short_name": "TS",
+  "scope": "/",
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#eee",
+  "theme_color": "#222",
+  "description": "Создание сайтов, интернет-магазинов с авторским дизайном, любой сложности, полный цикл разработки от дизайна до запуска сайта. Кейсы. Портфолио. Контакты. Цены. Статьи. SEO-продвижение. Вывод сайт в топ поисковых систем",
+  "icons": [
+    {
+      "src": "./icons/64x64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/128x128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "./icons/256x256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "serviceworker": {
+    "src": "./service-worker.js"
+  }
+}
