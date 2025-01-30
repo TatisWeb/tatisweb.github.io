@@ -1,10 +1,18 @@
+/*    --------------------------------------------------------------*/
+/*  1. Preloader loading
+/*  --------------------------------------------------------------*/
+$(window).on('load', function() {
+  var $preloader = $('#preloader'),
+    $icon_animate = $preloader.find('.icon_animate');
+  $icon_animate.fadeOut();
+  $preloader.delay(100).fadeOut('slow');
+});
+
 // change text in h1 modal then push feedback button
 $('#feedback_btn').on('click', function(e) {
-  e.preventDefault();
   $('#text_modal').html("Вы можете оставить отзыв, буду очень признателен!");
 });
 $('#modal_btn').on('click', function(e) {
-  e.preventDefault();
   $('#text_modal').html("Оставьте заявку и мы <br> с вами обязательно договоримся");
 });
 
