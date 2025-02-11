@@ -1,11 +1,62 @@
 /*    --------------------------------------------------------------*/
-/*  1. Preloader loading
+/*  Preloader loading
 /*  --------------------------------------------------------------*/
-$(window).on('load', function() {
-  var $preloader = $('#preloader'),
-    $icon_animate = $preloader.find('.icon_animate');
-  $icon_animate.fadeOut();
-  $preloader.delay(100).fadeOut('slow');
+
+document.addEventListener('DOMContentLoaded', () => {
+  const preloader = document.getElementById('preloader');
+  const progressElement = preloader.querySelector('small');
+
+  let totalResources = 0; // Общее количество ресурсов
+  let loadedResources = 0; // Количество загруженных ресурсов
+
+  // Функция для обновления прогресса
+  function updateProgress() {
+    loadedResources++;
+    const percentComplete = Math.round((loadedResources / totalResources) * 100);
+    progressElement.innerText = `Загрузка ${percentComplete}%...`;
+
+    // Если все ресурсы загружены, скрываем прелоадер
+    if (loadedResources >= totalResources) {
+      preloader.style.opacity = '0';
+      preloader.style.transition = 'opacity 0.7s ease-out';
+      setTimeout(() => {
+        preloader.style.display = 'none';
+      }, 700);
+    }
+  }
+
+  // Получаем все ресурсы на странице (изображения, стили, скрипты и т.д.)
+  const resources = performance.getEntriesByType('resource');
+
+  // Фильтруем ресурсы, чтобы исключить те, которые уже загружены
+  const pendingResources = resources.filter(resource => {
+    return resource.initiatorType !== 'xmlhttprequest' && !resource.name.includes(window.location.origin);
+  });
+
+  totalResources = pendingResources.length;
+
+  // Если ресурсов нет, сразу скрываем прелоадер
+  if (totalResources === 0) {
+    preloader.style.display = 'none';
+    return;
+  }
+
+  // Отслеживаем загрузку каждого ресурса
+  pendingResources.forEach(resource => {
+    const img = new Image();
+    img.src = resource.name;
+    img.onload = updateProgress;
+    img.onerror = updateProgress; // Обрабатываем ошибки загрузки
+  });
+
+  // Отслеживаем загрузку страницы
+  window.onload = () => {
+    // Убедимся, что все ресурсы загружены
+    if (loadedResources < totalResources) {
+      loadedResources = totalResources;
+      updateProgress();
+    }
+  };
 });
 
 // change text in h1 modal then push feedback button
