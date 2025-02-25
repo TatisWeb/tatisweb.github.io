@@ -1,63 +1,3 @@
-/*    --------------------------------------------------------------*/
-/*  Preloader loading
-/*  --------------------------------------------------------------*/
-
-document.addEventListener('DOMContentLoaded', () => {
-  const preloader = document.getElementById('preloader');
-  const progressElement = preloader.querySelector('small');
-
-  let totalResources = 0; // Общее количество ресурсов
-  let loadedResources = 0; // Количество загруженных ресурсов
-
-  // Функция для обновления прогресса
-  function updateProgress() {
-    loadedResources++;
-    const percentComplete = Math.round((loadedResources / totalResources) * 100);
-    progressElement.innerText = `Загрузка ${percentComplete}%...`;
-
-    // Если все ресурсы загружены, скрываем прелоадер
-    if (loadedResources >= totalResources) {
-      preloader.style.opacity = '0';
-      preloader.style.transition = 'opacity 0.7s ease-out';
-      setTimeout(() => {
-        preloader.style.display = 'none';
-      }, 700);
-    }
-  }
-
-  // Получаем все ресурсы на странице (изображения, стили, скрипты и т.д.)
-  const resources = performance.getEntriesByType('resource');
-
-  // Фильтруем ресурсы, чтобы исключить те, которые уже загружены
-  const pendingResources = resources.filter(resource => {
-    return resource.initiatorType !== 'xmlhttprequest' && !resource.name.includes(window.location.origin);
-  });
-
-  totalResources = pendingResources.length;
-
-  // Если ресурсов нет, сразу скрываем прелоадер
-  if (totalResources === 0) {
-    preloader.style.display = 'none';
-    return;
-  }
-
-  // Отслеживаем загрузку каждого ресурса
-  pendingResources.forEach(resource => {
-    const img = new Image();
-    img.src = resource.name;
-    img.onload = updateProgress;
-    img.onerror = updateProgress; // Обрабатываем ошибки загрузки
-  });
-
-  // Отслеживаем загрузку страницы
-  window.onload = () => {
-    // Убедимся, что все ресурсы загружены
-    if (loadedResources < totalResources) {
-      loadedResources = totalResources;
-      updateProgress();
-    }
-  };
-});
 
 // change text in h1 modal then push feedback button
 $('#feedback_btn').on('click', function(e) {
@@ -67,6 +7,21 @@ $('#modal_btn').on('click', function(e) {
   $('#text_modal').html("Оставьте заявку и мы <br> с вами обязательно договоримся");
 });
 
+const loadingDom = document.querySelector(".loading");
+const loadingString = "loading";
+const loadingWords = (idElement) => {
+  const loadingWordsContainer = document.createElement("div");
+  loadingWordsContainer.setAttribute("id", idElement);
+  for (var i = 0; i < loadingString.length; i++) {
+    const loadingWordSpan = document.createElement("span");
+    loadingWordSpan.innerText = loadingString[i];
+    loadingWordsContainer.appendChild(loadingWordSpan);
+  }
+  return loadingWordsContainer;
+};
+
+loadingDom.appendChild(loadingWords("loading-fixed"));
+loadingDom.appendChild(loadingWords("loading"));
 
 //menu nav background-color if scrolled
 
