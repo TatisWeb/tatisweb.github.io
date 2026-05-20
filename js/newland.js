@@ -1,28 +1,3 @@
-
-// change text in h1 modal then push feedback button
-$('#feedback_btn').on('click', function(e) {
-  $('#text_modal').html("Вы можете оставить отзыв, буду очень признателен!");
-});
-$('#modal_btn').on('click', function(e) {
-  $('#text_modal').html("Оставьте заявку и мы <br> с вами обязательно договоримся");
-});
-
-const loadingDom = document.querySelector(".loading");
-const loadingString = "loading";
-const loadingWords = (idElement) => {
-  const loadingWordsContainer = document.createElement("div");
-  loadingWordsContainer.setAttribute("id", idElement);
-  for (var i = 0; i < loadingString.length; i++) {
-    const loadingWordSpan = document.createElement("span");
-    loadingWordSpan.innerText = loadingString[i];
-    loadingWordsContainer.appendChild(loadingWordSpan);
-  }
-  return loadingWordsContainer;
-};
-
-loadingDom.appendChild(loadingWords("loading-fixed"));
-loadingDom.appendChild(loadingWords("loading"));
-
 //menu nav background-color if scrolled
 
 $(document).scroll(function(e) {
@@ -79,36 +54,11 @@ $('._modal').on('click', function(e) {
 
   
 //});
-
 //burger click portfolio
 $('#portfolio_burger').on('click', function(u) {
   u.preventDefault();
   $('.menu').removeClass('menu_active');
   jQuery.scrollTo('#portfolio', 400, { offset: -150 });
-});
-//ask click portfolio
-$('#ask_burger').on('click', function(u) {
-  u.preventDefault();
-  $('.menu').removeClass('menu_active');
-  jQuery.scrollTo('#ask', 400, { offset: -150 });
-});
-//how click portfolio
-$('#how_burger').on('click', function(u) {
-  u.preventDefault();
-  $('.menu').removeClass('menu_active');
-  jQuery.scrollTo('#how', 400, { offset: -150 });
-});
-//feedback click portfolio
-$('#feedback_burger').on('click', function(u) {
-  u.preventDefault();
-  $('.menu').removeClass('menu_active');
-  jQuery.scrollTo('#feedback', 400, { offset: -150 });
-});
-//uslugi click portfolio
-$('#uslugi_burger').on('click', function(u) {
-  u.preventDefault();
-  $('.menu').removeClass('menu_active');
-  jQuery.scrollTo('#uslugi', 400, { offset: -150 });
 });
 
 
@@ -193,24 +143,13 @@ $(document).ready(function() {
   // Owl Carousel 2
  $('.slider-2').owlCarousel({
  loop: true,
- margin: 10,
+ margin: 30,
  nav: false,
  items: 1,
  dots: false,
  autoplay: true,
  autoplayTimeout: 15000,
  smartSpeed: 3000,
- responsive: { //Адаптация в зависимости от разрешения экрана
-   0: {
-     items: 1
-   },
-   800: {
-     items: 2
-   },
-   2500: {
-     items: 3
-   }
- }
  });
  
  });
