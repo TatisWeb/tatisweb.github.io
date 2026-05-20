@@ -73,19 +73,17 @@ p {
    position: fixed;
    top: 0;
    left: 0;
-   width: 110vw;
-   height: 110vh;
+   width: 100%;
+   height: 100%;
    background: #000;
    z-index: 9999;
    display: flex;
-   
    justify-content: center;
    align-items: center;
    transition: opacity 0.5s;
       }
 .loading {
   position: relative;
-
 }
 
 #loading {
@@ -106,7 +104,7 @@ p {
   font-size: 70px;
   font-weight: 700;
   color: #ffffff4f;
-  width: 347px;
+  width: auto;
 }
 
 #loading > span:nth-child(1),
@@ -826,6 +824,12 @@ p:before {
   width: 100%;
   max-width: 92%;
 }
+@media (min-width: 567px) {
+  .intro__content {
+    position: relative!important;
+  }
+}
+
 
 .btn-bay {
   margin-top: 3rem;
@@ -849,12 +853,12 @@ p:before {
   transition: .4s;
 }
 
-@media(min-width:568px) {
+@media(min-width: 568px) {
   .intro__content {
     top: -30rem;
   }
 }
-@media(min-width:868px) {
+@media(min-width: 868px) {
   .intro__content {
     top: -17rem;
   }
@@ -866,7 +870,6 @@ p:before {
   grid-area: photo;
   margin-top: 0px;
   margin-right: 0px;
-
 }
 
 .main-foto {
@@ -886,6 +889,7 @@ p:before {
   .intro__content {
     margin-top: 35rem;
   }
+
 }
 
 @media (min-width: 1300px) {
@@ -913,6 +917,13 @@ p:before {
   white-space: nowrap;
   text-align: left;
 }
+@media (min-width: 837px){
+  .text-intro_hi,
+  .text-intro_design {
+    line-height: 7.5rem;
+  }
+}
+
 
 .intro__content h2 {
   animation-delay: 1000ms;
