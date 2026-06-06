@@ -136,6 +136,686 @@
 -->
 </head>
 <body>
+<!-- ============ CHAT BOT WIDGET ============ -->
+<div id="vkb-chat">
+  <!-- Кнопка открытия чата -->
+  <button id="vkb-chat-toggle" aria-label="Открыть чат">
+    <img src="img/logo-main.png" alt="VKB">
+    <span class="vkb-pulse"></span>
+    <span class="vkb-badge" id="vkb-badge">1</span>
+  </button>
+
+  <!-- Окно чата -->
+  <div id="vkb-chat-window">
+    <header class="vkb-header">
+      <div class="vkb-header-info">
+        <img src="img/logo-main.png" alt="VKB" class="vkb-avatar">
+        <div>
+          <div class="vkb-title">AI Помощник</div>
+          <div class="vkb-status"><span class="vkb-dot"></span> Онлайн</div>
+        </div>
+      </div>
+      <button class="vkb-close" id="vkb-close" aria-label="Закрыть">✕</button>
+    </header>
+
+    <div class="vkb-messages" id="vkb-messages"></div>
+
+    <div class="vkb-quick" id="vkb-quick"></div>
+
+    <form class="vkb-input-wrap" id="vkb-form" autocomplete="off">
+      <input type="text" id="vkb-input" placeholder="Напишите ваш вопрос..." required>
+      <button type="submit" aria-label="Отправить">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+        </svg>
+      </button>
+    </form>
+  </div>
+</div>
+
+<style>
+  :root {
+    --bg: #17171c;
+    --bg-soft: #1d1e25;
+    --bg-soft-2: #101116;
+    --accent: #00ecfb;
+    --accent-2: #5600A1;
+    --text: #f4fbff;
+    --muted: #97a6b6;
+    --line: rgba(0, 236, 251, .15);
+    --shadow-dark: 16px 16px 30px rgba(0, 0, 0, .5);
+    --shadow-light: -8px -8px 22px rgba(255, 255, 255, .03);
+    --neon: 0 0 18px rgba(0, 236, 251, .28), 0 0 42px rgba(0, 236, 251, .12);
+    --radius: 24px;
+  }
+
+  #vkb-chat * { box-sizing: border-box; font-family: inherit; }
+
+  /* Кнопка открытия */
+  #vkb-chat-toggle {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    background: var(--bg-soft);
+    cursor: pointer;
+    z-index: 9998;
+    box-shadow: var(--neon), var(--shadow-dark);
+    padding: 0;
+    overflow: visible;
+    transition: transform .3s ease;
+  }
+  #vkb-chat-toggle:hover { transform: scale(1.08); }
+  #vkb-chat-toggle img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+  }
+  .vkb-pulse {
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    animation: vkbPulse 2s infinite;
+    pointer-events: none;
+  }
+  @keyframes vkbPulse {
+    0% { transform: scale(1); opacity: .8; }
+    100% { transform: scale(1.5); opacity: 0; }
+  }
+  .vkb-badge {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px var(--accent);
+  }
+  .vkb-badge.hidden { display: none; }
+
+  /* Окно чата */
+  #vkb-chat-window {
+    position: fixed;
+    bottom: 110px;
+    right: 24px;
+    width: 380px;
+    max-width: calc(100vw - 32px);
+    height: 580px;
+    max-height: calc(100vh - 140px);
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-dark), var(--neon);
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    color: var(--text);
+    animation: vkbOpen .3s ease;
+  }
+  #vkb-chat-window.open { display: flex; }
+  @keyframes vkbOpen {
+    from { opacity: 0; transform: translateY(20px) scale(.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .vkb-header {
+    padding: 16px;
+    background: linear-gradient(135deg, var(--bg-soft) 0%, var(--bg-soft-2) 100%);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .vkb-header-info { display: flex; align-items: center; gap: 12px; }
+  .vkb-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 12px rgba(0,236,251,.4);
+    object-fit: cover;
+  }
+  .vkb-title { font-weight: 700; font-size: 15px; color: var(--text); }
+  .vkb-status {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .vkb-dot {
+    width: 8px; height: 8px;
+    background: #00ff88;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00ff88;
+    animation: vkbBlink 2s infinite;
+  }
+  @keyframes vkbBlink { 50% { opacity: .5; } }
+  .vkb-close {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--text);
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all .2s;
+  }
+  .vkb-close:hover { background: var(--accent); color: var(--bg); }
+
+  .vkb-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--bg-soft-2);
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--bg-soft-2);
+  }
+  .vkb-messages::-webkit-scrollbar { width: 6px; }
+  .vkb-messages::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+
+  .vkb-msg {
+    max-width: 85%;
+    padding: 12px 14px;
+    border-radius: 16px;
+    font-size: 14px;
+    line-height: 1.5;
+    animation: vkbMsgIn .3s ease;
+    word-wrap: break-word;
+  }
+  @keyframes vkbMsgIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .vkb-msg.bot {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    color: var(--text);
+    border-top-left-radius: 4px;
+    align-self: flex-start;
+  }
+  .vkb-msg.user {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    color: #fff;
+    border-top-right-radius: 4px;
+    align-self: flex-end;
+    box-shadow: 0 4px 12px rgba(0,236,251,.2);
+  }
+  .vkb-msg strong { color: var(--accent); }
+  .vkb-msg.bot a {
+    color: var(--accent);
+    text-decoration: none;
+    border-bottom: 1px dashed var(--accent);
+  }
+
+  .vkb-typing {
+    display: flex; gap: 4px; padding: 12px 16px;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    border-top-left-radius: 4px;
+    align-self: flex-start;
+    width: fit-content;
+  }
+  .vkb-typing span {
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: vkbType 1.4s infinite;
+  }
+  .vkb-typing span:nth-child(2) { animation-delay: .2s; }
+  .vkb-typing span:nth-child(3) { animation-delay: .4s; }
+  @keyframes vkbType {
+    0%, 60%, 100% { transform: translateY(0); opacity: .4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+  }
+
+  .vkb-quick {
+    padding: 8px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    max-height: 140px;
+    overflow-y: auto;
+  }
+  .vkb-chip {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    color: var(--text);
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .2s;
+    white-space: nowrap;
+  }
+  .vkb-chip:hover {
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(0,236,251,.3);
+    color: var(--accent);
+  }
+  .vkb-chip.primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    border-color: transparent;
+  }
+
+  .vkb-input-wrap {
+    padding: 12px;
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    display: flex;
+    gap: 8px;
+  }
+  #vkb-input {
+    flex: 1;
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-size: 14px;
+    outline: none;
+    transition: border-color .2s;
+  }
+  #vkb-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,236,251,.1); }
+  #vkb-input::placeholder { color: var(--muted); }
+  .vkb-input-wrap button[type="submit"] {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    cursor: pointer;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .2s;
+  }
+  .vkb-input-wrap button[type="submit"]:hover { transform: scale(1.05); }
+  .vkb-input-wrap button[type="submit"] svg { width: 20px; height: 20px; }
+
+  /* Форма заявки */
+  .vkb-lead-form {
+    background: var(--bg-soft);
+    border: 1px solid var(--accent);
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-self: stretch;
+    box-shadow: var(--neon);
+  }
+  .vkb-lead-form input, .vkb-lead-form textarea {
+    background: var(--bg-soft-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-size: 13px;
+    outline: none;
+    font-family: inherit;
+    resize: vertical;
+  }
+  .vkb-lead-form input:focus, .vkb-lead-form textarea:focus { border-color: var(--accent); }
+  .vkb-lead-form button {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border: none;
+    color: #fff;
+    padding: 11px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  .vkb-lead-form .vkb-form-title {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 4px;
+  }
+
+  @media (max-width: 480px) {
+    #vkb-chat-window {
+      bottom: 0;
+      right: 0;
+      width: 100vw;
+      height: 100vh;
+      max-height: 100vh;
+      border-radius: 0;
+    }
+    #vkb-chat-toggle { width: 60px; height: 60px; bottom: 16px; right: 16px; }
+  }
+</style>
+
+<script>
+(function() {
+  // ============ НАСТРОЙКИ TELEGRAM ============
+  const TG_BOT_TOKEN = '8974814478:AAE5xVv2kKm4kJ7M--n8uufQ3q1iA6Hfirc'; // Получить у @BotFather
+  const TG_CHAT_ID = '1410289196';       // Получить у @userinfobot
+
+  // ============ БАЗА ЗНАНИЙ ============
+  const KB = {
+    'ai_seo': {
+      q: 'Что такое AI SEO?',
+      a: '<strong>AI SEO</strong> — современный подход к поисковой оптимизации с использованием искусственного интеллекта. ИИ анализирует конкурентов, собирает семантическое ядро, генерирует мета-теги и тексты, прогнозирует результаты.<br><br>В отличие от классики, AI быстрее адаптируется под изменения Google и Яндекс, находя неочевидные точки роста.'
+    },
+    'seo_diff': {
+      q: 'Разница SEO и AI SEO?',
+      a: 'Обычное SEO — ручной анализ и стандартные инструменты.<br><br><strong>AI SEO</strong> автоматизирует рутину: нейросети мгновенно анализируют тысячи запросов, выявляют скрытые интенты пользователей и предлагают оптимальную структуру контента. Это экономит время и бюджет.'
+    },
+    'geo': {
+      q: 'Что такое GEO-продвижение?',
+      a: '<strong>GEO</strong> — продвижение в локальном поиске. Если ваш бизнес привязан к адресу (кафе, салон, автосервис), мы выводим сайт в топ Яндекс.Карт и Google Maps по запросам «рядом со мной», «в [районе]».<br><br>Это обеспечивает приток клиентов поблизости.'
+    },
+    'design': {
+      q: 'Дизайн сайтов и соцсетей',
+      a: 'Мы создаём <strong>полный визуальный стиль бренда</strong>:<br>• Дизайн сайта под ключ (UI/UX)<br>• Фирменные иконки и логотипы<br>• Оформление профилей соцсетей<br>• Продающие карточки для маркетплейсов (Яндекс.Маркет, Google Shopping)'
+    },
+    'banners': {
+      q: 'Баннеры для рекламы',
+      a: 'Да! Готовим <strong>статичные и анимированные баннеры</strong> (креативы) для таргетированной рекламы во всех соцсетях, строго по техтребованиям площадок.'
+    },
+    'icons_value': {
+      q: 'Зачем уникальные иконки?',
+      a: 'Уникальный дизайн <strong>выделяет вас среди конкурентов</strong>. Профессионально оформленные карточки повышают кликабельность (CTR) и конверсию в покупку — покупатели больше доверяют.'
+    },
+    'cms': {
+      q: 'Какую CMS выбрать?',
+      a: 'Зависит от задач:<br><br>• <strong>WordPress</strong> — блоги, корпоративы, лендинги, небольшие магазины<br>• <strong>OpenCart</strong> — функциональные интернет-магазины<br>• <strong>Tilda</strong> — быстрый запуск лендингов и промо<br>• <strong>1С-Битрикс</strong> — крупный бизнес, интеграция с 1С'
+    },
+    'admin': {
+      q: 'Смогу ли управлять сам?',
+      a: 'Безусловно! Настраиваем удобную <strong>админ-панель</strong> и проводим базовое обучение по добавлению новостей, товаров, статей. Получите полностью управляемый инструмент без знания кода.'
+    },
+    'funnel': {
+      q: 'Воронка продаж под ключ',
+      a: 'Комплексная услуга — весь путь клиента от первого касания до сделки:<br><br>1. Анализ ниши и ЦА<br>2. Создание лендинга<br>3. Привлечение трафика (контекст + таргет)<br>4. Настройка аналитики<br>5. Оптимизация для снижения цены клиента'
+    },
+    'guarantee': {
+      q: 'Гарантия клиентов?',
+      a: 'Гарантируем <strong>качественную настройку рекламы</strong> и оптимизацию лендинга. Итоговая продажа зависит и от вашего отдела продаж.<br><br>Наша задача — стабильный поток <strong>целевых заявок (лидов)</strong> по оптимальной цене.'
+    },
+    'app_why': {
+      q: 'Зачем мне приложение?',
+      a: 'Приложение <strong>повышает лояльность</strong> через программы лояльности и push-уведомления. Прямой канал коммуникации, работает офлайн.<br><br>Для доставки, услуг, ритейла — серьёзное конкурентное преимущество.'
+    },
+    'app_price': {
+      q: 'Цена приложения?',
+      a: 'Стоимость индивидуальна и зависит от функционала (каталог, корзина, ЛК, интеграции). Для точной оценки составим ТЗ.<br><br>👉 <strong>Бесплатная консультация</strong> — оставьте заявку!'
+    },
+    'contact': {
+      q: '📞 Оставить заявку',
+      a: 'lead_form'
+    }
+  };
+
+  // Категории для быстрых кнопок
+  const CATEGORIES = {
+    main: [
+      { id: 'cat_seo', label: '🚀 Продвижение' },
+      { id: 'cat_design', label: '🎨 Дизайн' },
+      { id: 'cat_dev', label: '💻 Разработка' },
+      { id: 'cat_marketing', label: '📈 Маркетинг' },
+      { id: 'cat_app', label: '📱 Приложения' },
+      { id: 'contact', label: '📞 Заявка', primary: true }
+    ],
+    cat_seo: ['ai_seo', 'seo_diff', 'geo', 'contact'],
+    cat_design: ['design', 'banners', 'icons_value', 'contact'],
+    cat_dev: ['cms', 'admin', 'contact'],
+    cat_marketing: ['funnel', 'guarantee', 'contact'],
+    cat_app: ['app_why', 'app_price', 'contact']
+  };
+
+  // ============ DOM ============
+  const toggle = document.getElementById('vkb-chat-toggle');
+  const window_ = document.getElementById('vkb-chat-window');
+  const closeBtn = document.getElementById('vkb-close');
+  const messages = document.getElementById('vkb-messages');
+  const quick = document.getElementById('vkb-quick');
+  const form = document.getElementById('vkb-form');
+  const input = document.getElementById('vkb-input');
+  const badge = document.getElementById('vkb-badge');
+
+  let opened = false;
+
+  // ============ ФУНКЦИИ ============
+  function addMessage(text, who = 'bot') {
+    const msg = document.createElement('div');
+    msg.className = `vkb-msg ${who}`;
+    msg.innerHTML = text;
+    messages.appendChild(msg);
+    messages.scrollTop = messages.scrollHeight;
+    return msg;
+  }
+
+  function showTyping() {
+    const t = document.createElement('div');
+    t.className = 'vkb-typing';
+    t.id = 'vkb-typing-indicator';
+    t.innerHTML = '<span></span><span></span><span></span>';
+    messages.appendChild(t);
+    messages.scrollTop = messages.scrollHeight;
+  }
+
+  function hideTyping() {
+    const t = document.getElementById('vkb-typing-indicator');
+    if (t) t.remove();
+  }
+
+  function renderQuick(catKey = 'main') {
+    quick.innerHTML = '';
+    const items = CATEGORIES[catKey];
+    if (!items) return;
+
+    items.forEach(item => {
+      const chip = document.createElement('button');
+      chip.className = 'vkb-chip';
+      if (typeof item === 'string') {
+        chip.textContent = KB[item].q;
+        chip.onclick = () => handleAnswer(item);
+        if (item === 'contact') chip.classList.add('primary');
+      } else {
+        chip.textContent = item.label;
+        if (item.primary) chip.classList.add('primary');
+        chip.onclick = () => {
+          if (item.id === 'contact') {
+            handleAnswer('contact');
+          } else {
+            addMessage(item.label, 'user');
+            renderQuick(item.id);
+            setTimeout(() => {
+              showTyping();
+              setTimeout(() => {
+                hideTyping();
+                addMessage('Выберите интересующий вопрос:', 'bot');
+              }, 600);
+            }, 200);
+          }
+        };
+      }
+      quick.appendChild(chip);
+    });
+
+    // Кнопка назад
+    if (catKey !== 'main') {
+      const back = document.createElement('button');
+      back.className = 'vkb-chip';
+      back.textContent = '← Меню';
+      back.onclick = () => renderQuick('main');
+      quick.appendChild(back);
+    }
+  }
+
+  function handleAnswer(key) {
+    const item = KB[key];
+    if (!item) return;
+    addMessage(item.q, 'user');
+    showTyping();
+    setTimeout(() => {
+      hideTyping();
+      if (item.a === 'lead_form') {
+        renderLeadForm();
+      } else {
+        addMessage(item.a, 'bot');
+      }
+    }, 700);
+  }
+
+  function renderLeadForm() {
+    const form = document.createElement('form');
+    form.className = 'vkb-lead-form';
+    form.innerHTML = `
+      <div class="vkb-form-title">📝 Оставьте заявку</div>
+      <input type="text" name="name" placeholder="Ваше имя" required>
+      <input type="tel" name="phone" placeholder="Телефон / Telegram" required>
+      <textarea name="message" placeholder="Кратко о задаче (необязательно)" rows="2"></textarea>
+      <button type="submit">Отправить заявку 🚀</button>
+    `;
+    messages.appendChild(form);
+    messages.scrollTop = messages.scrollHeight;
+
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const data = {
+        name: form.name.value,
+        phone: form.phone.value,
+        message: form.message.value || '—'
+      };
+      form.querySelector('button').textContent = 'Отправляем...';
+      form.querySelector('button').disabled = true;
+      const ok = await sendToTelegram(data);
+      form.remove();
+      if (ok) {
+        addMessage('✅ <strong>Заявка отправлена!</strong><br>Мы свяжемся с вами в ближайшее время.', 'bot');
+      } else {
+        addMessage('❌ Ошибка отправки. Попробуйте позже или напишите нам напрямую.', 'bot');
+      }
+    };
+  }
+
+  async function sendToTelegram(data) {
+    const text = `🔥 <b>Новая заявка с сайта VKB</b>\n\n` +
+                 `👤 <b>Имя:</b> ${escapeHtml(data.name)}\n` +
+                 `📞 <b>Контакт:</b> ${escapeHtml(data.phone)}\n` +
+                 `💬 <b>Сообщение:</b> ${escapeHtml(data.message)}\n\n` +
+                 `🌐 <b>Страница:</b> ${location.href}`;
+    try {
+      const res = await fetch(`https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: TG_CHAT_ID,
+          text: text,
+          parse_mode: 'HTML'
+        })
+      });
+      return res.ok;
+    } catch (e) {
+      console.error('TG error:', e);
+      return false;
+    }
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  // Поиск по ключевым словам
+  function searchAnswer(text) {
+    const t = text.toLowerCase();
+    const map = [
+      { keys: ['ai seo', 'аи сео', 'искусственный'], id: 'ai_seo' },
+      { keys: ['разниц', 'отличи'], id: 'seo_diff' },
+      { keys: ['гео', 'geo', 'локальн', 'карт'], id: 'geo' },
+      { keys: ['дизайн', 'оформлен', 'визуал'], id: 'design' },
+      { keys: ['баннер', 'креатив'], id: 'banners' },
+      { keys: ['иконк', 'логотип', 'карточк'], id: 'icons_value' },
+      { keys: ['cms', 'wordpress', 'тильда', 'tilda', 'битрикс', 'opencart'], id: 'cms' },
+      { keys: ['админ', 'управлять', 'самостоятельн'], id: 'admin' },
+      { keys: ['воронк', 'продаж'], id: 'funnel' },
+      { keys: ['гаранти', 'клиент'], id: 'guarantee' },
+      { keys: ['приложен', 'android', 'андроид', 'мобильн'], id: 'app_why' },
+      { keys: ['цена', 'стоимост', 'сколько'], id: 'app_price' },
+      { keys: ['заявк', 'связ', 'контакт', 'менеджер', 'звон'], id: 'contact' }
+    ];
+    for (const m of map) {
+      if (m.keys.some(k => t.includes(k))) return m.id;
+    }
+    return null;
+  }
+
+  // ============ ОБРАБОТЧИКИ ============
+  toggle.onclick = () => {
+    opened = !opened;
+    window_.classList.toggle('open', opened);
+    if (opened) {
+      badge.classList.add('hidden');
+      if (messages.children.length === 0) initChat();
+    }
+  };
+  closeBtn.onclick = () => {
+    opened = false;
+    window_.classList.remove('open');
+  };
+
+  form.onsubmit = (e) => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+    addMessage(escapeHtml(text), 'user');
+    input.value = '';
+    showTyping();
+    setTimeout(() => {
+      hideTyping();
+      const found = searchAnswer(text);
+      if (found) {
+        if (KB[found].a === 'lead_form') renderLeadForm();
+        else addMessage(KB[found].a, 'bot');
+      } else {
+        addMessage('🤔 Не нашёл точного ответа. Выберите тему из меню ниже или оставьте заявку — менеджер вам ответит!', 'bot');
+        renderLeadForm();
+      }
+    }, 700);
+  };
+
+  function initChat() {
+    setTimeout(() => {
+      addMessage('👋 Привет! Я помощник <strong>AI</strong>.<br>Помогу с вопросами по разработке, дизайну и продвижению сайтов.', 'bot');
+      setTimeout(() => {
+        addMessage('Выберите интересующий раздел или задайте свой вопрос:', 'bot');
+        renderQuick('main');
+      }, 800);
+    }, 300);
+  }
+
+  // Приветственный badge через 3 сек
+  setTimeout(() => {
+    if (!opened) badge.classList.remove('hidden');
+  }, 3000);
+})();
+</script>
     <style>
     :root {
       --bg: #17171c;
@@ -816,88 +1496,387 @@ window.addEventListener('load', function () {
     </section>
 
     </div>
-    <section id="uslugi">
-      <!-- Block my services-->
+<section id="uslugi">
+  <!-- Block my services-->
 
-      <h2 class="services-title"><mark>Услуги</mark></h2>
+  <h2 class="services-title"><mark>Услуги</mark></h2>
 
-      <div class="my__services">
-
-
-        <div class="developement __items">
+  <div class="my__services">
 
 
-          <h5><mark>Разработка сайта</mark></h5>
-          <div class="__services">
-            <span>Современный дизайн<br>
-              Продающий текст<br>
-              Грамотный код<br>
-              Адаптивность<br>
-              Модули оплаты<br>
-              Seo оптимизация<br>
-              <mark> от 10.000 ₽ </mark>
-          </div>
-          <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать сайт</a>
-
-        </div>
-        <div class="seo __items">
-          <h5><mark>Дизайн сайта</mark></h5>
-          <div class="__services">
-            <span>Уникальный дизайн<br>
-              Логотип, анимация<br>
-              Фирменный стиль<br>
-              Шрифты, иконки<br>
-              Цветовая гамма<br>
-              Эксклюзив<br>
-              <mark>от 10.000 ₽</mark>
-          </div>
-          <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
-        </div>
+    <div class="developement __items">
 
 
-        <div class="promotion __items">
-          <h5>
-            <mark>Продвижение сайта</mark>
-          </h5>
-          <div class="__services">
-            <span>Стратегия продвижения<br>
-              Сбор семантического ядра<br>
-              Системное продвижение<br>
-              Статейное продвижение<br>
-              Поисковая оптимизация<br>
-              Таргетированная реклама<br>
-              <mark> от 10.000 ₽ </mark>
-          </div>
-          <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
-        </div>
+      <h5><mark>Разработка сайта</mark></h5>
+      <div class="__services">
+        <span>Современный дизайн<br>
+          Продающий текст<br>
+          Грамотный код<br>
+          Адаптивность<br>
+          Модули оплаты<br>
+          Seo оптимизация<br>
+          <mark> от 10.000 ₽ </mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать сайт</a>
+
+    </div>
+    <div class="seo __items">
+      <h5><mark>Дизайн сайта</mark></h5>
+      <div class="__services">
+        <span>Уникальный дизайн<br>
+          Логотип, анимация<br>
+          Фирменный стиль<br>
+          Шрифты, иконки<br>
+          Цветовая гамма<br>
+          Эксклюзив<br>
+          <mark>от 10.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="promotion __items">
+      <h5>
+        <mark>Продвижение сайта</mark>
+      </h5>
+      <div class="__services">
+        <span>Стратегия продвижения<br>
+          Сбор семантического ядра<br>
+          Системное продвижение<br>
+          Статейное продвижение<br>
+          Поисковая оптимизация<br>
+          Таргетированная реклама<br>
+          <mark> от 10.000 ₽ </mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
 
 
 
-        <div class="whyme __items">
+    <div class="whyme __items">
 
-          <h5><mark>Мои преимущества</mark></h5>
+      <h5><mark>Мои преимущества</mark></h5>
 
-          <div class="__services">
+      <div class="__services">
 
-            <span>Качественный продукт<br>
-              Лучше чем у конкурентов<br>
-              Смарт технологии<br>
-              Тайм-менеджмент<br>
-              Выгодные цены<br>
-              Бонусы, Скидки<br>
-              Гарантия результата<br>
+        <span>Качественный продукт<br>
+          Лучше чем у конкурентов<br>
+          Смарт технологии<br>
+          Тайм-менеджмент<br>
+          Выгодные цены<br>
+          Бонусы, Скидки<br>
+          Гарантия результата<br>
 
-
-          </div>
-          <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать сайт</a>
-        </div>
 
       </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать сайт</a>
+    </div>
+
+    <div class="ai-seo __items">
+      <h5><mark>AI SEO продвижение</mark></h5>
+      <div class="__services">
+        <span>AI-генерация контента<br>
+          Оптимизация под ИИ<br>
+          Анализ конкурентов<br>
+          Семантическое ядро<br>
+          Технический аудит<br>
+          Автоматизация процессов<br>
+          <mark>от 15.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="geo-seo __items">
+      <h5><mark>GEO/SEO продвижение</mark></h5>
+      <div class="__services">
+        <span>Геолокационная оптимизация<br>
+          Региональное продвижение<br>
+          Локальные запросы<br>
+          Google My Business<br>
+          Яндекс.Справочник<br>
+          Геотаргетинг<br>
+          <mark>от 12.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="pbn-networks __items">
+      <h5><mark>PBN сети на WordPress</mark></h5>
+      <div class="__services">
+        <span>Создание сети сайтов<br>
+          Уникальные домены<br>
+          Разнообразие хостингов<br>
+          Качественный контент<br>
+          Безопасная структура<br>
+          Ссылочная масса<br>
+          <mark>от 20.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="chatbots __items">
+      <h5><mark>Создание чат-ботов</mark></h5>
+      <div class="__services">
+        <span>Telegram, WhatsApp, Viber<br>
+          Интеграция с CRM<br>
+          Автоворонки продаж<br>
+          Автоматизация поддержки<br>
+          Сбор лидов<br>
+          Уведомления клиентам<br>
+          <mark>от 15.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="yandex-maps __items">
+      <h5><mark>Продвижение Яндекс Карт</mark></h5>
+      <div class="__services">
+        <span>Оптимизация карточки<br>
+          Работа с отзывами<br>
+          Фото и видео контент<br>
+          Геометки и категории<br>
+          Повышение рейтинга<br>
+          Приоритет в выдаче<br>
+          <mark>от 10.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="yandex-reviews __items">
+      <h5><mark>Продвижение Яндекс Отзывы</mark></h5>
+      <div class="__services">
+        <span>Управление репутацией<br>
+          Работа с негативом<br>
+          Стимулирование отзывов<br>
+          Мониторинг упоминаний<br>
+          Анализ конкурентов<br>
+          Повышение доверия<br>
+          <mark>от 8.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="behavioral-factor __items">
+      <h5><mark>Поведенческий фактор Яндекс</mark></h5>
+      <div class="__services">
+        <span>Накрутка ПФ<br>
+          Естественное поведение<br>
+          Безопасные методы<br>
+          Увеличение времени<br>
+          Снижение отказов<br>
+          Рост позиций<br>
+          <mark>от 15.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="web-archive __items">
+      <h5><mark>Восстановление из Web Archive</mark></h5>
+      <div class="__services">
+        <span>Восстановление контента<br>
+          Возврат трафика<br>
+          Сохранение ссылок<br>
+          Реставрация дизайна<br>
+          Перенос на новый хост<br>
+          SEO-оптимизация<br>
+          <mark>от 10.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="drop-domains __items">
+      <h5><mark>Подбор и покупка дроп-доменов</mark></h5>
+      <div class="__services">
+        <span>Анализ истории домена<br>
+          Проверка санкций<br>
+          Оценка трафика<br>
+          Ссылочный профиль<br>
+          Тематика домена<br>
+          Безопасная покупка<br>
+          <mark>от 5.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="marketing-funnel __items">
+      <h5><mark>Маркетинг: воронка от лендинга до клиентов</mark></h5>
+      <div class="__services">
+        <span>Разработка лендинга<br>
+          Автоворонка продаж<br>
+          Email-маркетинг<br>
+          Ретаргетинг<br>
+          Аналитика конверсий<br>
+          Оптимизация пути клиента<br>
+          <mark>от 25.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="brandbook __items">
+      <h5><mark>Разработка брендбука</mark></h5>
+      <div class="__services">
+        <span>Логотип и айдентика<br>
+          Фирменные цвета<br>
+          Типографика<br>
+          Графические элементы<br>
+          Гайдлайн по использованию<br>
+          Презентация бренда<br>
+          <mark>от 20.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="article-writing __items">
+      <h5><mark>Написание статей для сайтов</mark></h5>
+      <div class="__services">
+        <span>SEO-оптимизированные тексты<br>
+          Уникальный контент<br>
+          Подбор ключевых слов<br>
+          Структура статей<br>
+          Экспертность контента<br>
+          Регулярное наполнение<br>
+          <mark>от 3.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="aeo-seo __items">
+      <h5><mark>AEO и SEO оптимизация</mark></h5>
+      <div class="__services">
+        <span>Answer Engine Optimization<br>
+          Голосовой поиск<br>
+          Структурированные данные<br>
+          Featured snippets<br>
+          Оптимизация контента<br>
+          Техническая оптимизация<br>
+          <mark>от 15.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="cms-upgrade __items">
+      <h5><mark>Доработка сайтов на любой CMS</mark></h5>
+      <div class="__services">
+        <span>WordPress, Joomla, Drupal<br>
+          Bitrix, MODX, Tilda<br>
+          Исправление ошибок<br>
+          Добавление функционала<br>
+          Оптимизация скорости<br>
+          Обновление версий<br>
+          <mark>от 8.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="link-strategy __items">
+      <h5><mark>Ссылочная стратегия</mark></h5>
+      <div class="__services">
+        <span>Анализ ссылочного профиля<br>
+          Подбор доноров<br>
+          Разнообразие ссылок<br>
+          Естественный прирост<br>
+          Мониторинг позиций<br>
+          Отчетность<br>
+          <mark>от 12.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="crowd-links __items">
+      <h5><mark>Крауд и вечные ссылки</mark></h5>
+      <div class="__services">
+        <span>Форумы и блоги<br>
+          Q&A площадки<br>
+          Естественные упоминания<br>
+          Вечные ссылки<br>
+          Трастовые доноры<br>
+          Безопасное размещение<br>
+          <mark>от 10.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="site-purchase __items">
+      <h5><mark>Подбор и покупка действующего сайта</mark></h5>
+      <div class="__services">
+        <span>Аудит сайта/соцсети<br>
+          Проверка трафика<br>
+          Анализ монетизации<br>
+          Юридическая проверка<br>
+          Переговоры с продавцом<br>
+          Безопасная сделка<br>
+          <mark>от 15.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="android-apps __items">
+      <h5><mark>Разработка приложений Android</mark></h5>
+      <div class="__services">
+        <span>Нативная разработка<br>
+          Современный UI/UX<br>
+          Интеграция API<br>
+          Push-уведомления<br>
+          Публикация в Google Play<br>
+          Техническая поддержка<br>
+          <mark>от 50.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="python-react __items">
+      <h5><mark>Написание кода Python/React</mark></h5>
+      <div class="__services">
+        <span>Backend на Python<br>
+          Frontend на React<br>
+          REST API разработка<br>
+          Интеграция с базами данных<br>
+          Оптимизация кода<br>
+          Документация<br>
+          <mark>от 20.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+    <div class="product-feeds __items">
+      <h5><mark>Торговые фиды для интернет-магазинов</mark></h5>
+      <div class="__services">
+        <span>Яндекс.Маркет, Google Shopping<br>
+          Создание XML-фидов<br>
+          Оптимизация товаров<br>
+          Автоматическое обновление<br>
+          Исправление ошибок<br>
+          Интеграция с CMS<br>
+          <mark>от 8.000 ₽</mark>
+      </div>
+      <a href="#" class="btn-neon btn-glow btn-gradient-border --services" rel="nofollow">Заказать услугу</a>
+    </div>
+
+
+  </div>
 
 
 
-    </section>
-
+</section>
 
     <!-- /* Slider owl corusel Case -->
 
@@ -1593,7 +2572,7 @@ window.addEventListener('load', function () {
 
 
       <div class="footer__dev">
-        <a href="index.html" class="footer__link hover_for_href">Веб-разработчик Тарасенко Сергей | 2019-2025г.&#169; Все права защищены.
+        <a href="index.html" class="footer__link hover_for_href">Веб-разработчик Тарасенко Сергей | 2019-2026г.&#169; Все права защищены.
         </a>
         <a rel="nofollow" href="politica.html" class="footer__link hover_for_href">Политика конфиденциальности.
         </a>
