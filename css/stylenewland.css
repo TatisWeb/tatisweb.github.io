@@ -2730,66 +2730,7 @@ ul li input[type=checkbox]:checked ~ i:after {
   color: #fff;
 }
 
-.developement {
-  height: 100%;
-  background: var(--ui-color);
-  background-image: linear-gradient(to top,
-      rgb(0 0 0 / 1),
-      rgb(0 0 0 / 0)), url("/img/uslugi/create-site.jpg");
-  background-size: 100%;
-  background-position: 50%;
-  border-radius: 10px;
-}
 
-.promotion {
-  height: 100%;
-  background-image: linear-gradient(to top,
-      rgb(0 0 0 / 1),
-      rgb(0 0 0 / 0)), url("/img/uslugi/promotion.jpg");
-  background-size: 100%;
-  background-position: 50%;
-  border-radius: 10px;
-}
-
-.seo {
-  height: 100%;
-  background-image: linear-gradient(to top,
-      rgb(0 0 0 / 1),
-      rgb(0 0 0 / 0)), url("/img/uslugi/seo.jpg");
-  background-size: 100%;
-  background-position: 50%;
-  border-radius: 10px;
-}
-
-.aiseo {
-  height: 100%;
-  background-image: linear-gradient(to top,
-      rgb(0 0 0 / 1),
-      rgb(0 0 0 / 0)), url("/img/uslugi/aiseo.jpg");
-  background-size: 100%;
-  background-position: 50%;
-  border-radius: 10px;
-}
-
-.geoseo {
-  height: 100%;
-  background-image: linear-gradient(to top,
-      rgb(0 0 0 / 1),
-      rgb(0 0 0 / 0)), url("/img/uslugi/geoseo.jpg");
-  background-size: 100%;
-  background-position: 50%;
-  border-radius: 10px;
-}
-
-.whyme {
-  height: 100%;
-  background-image: linear-gradient(to top,
-      rgb(0 0 0 / 1),
-      rgb(0 0 0 / 0)), url("/img/uslugi/whyme.jpg");
-  background-size: 100%;
-  background-position: 50%;
-  border-radius: 10px;
-}
 
 /* Modal bay window */
 
