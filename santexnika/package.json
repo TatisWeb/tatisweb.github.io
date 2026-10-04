@@ -1,0 +1,12 @@
+{
+  "name": "dom-santehniki-balakovo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Сайт магазина сантехники с каталогом, формой заявок, VK-импортом и панелью управления",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18.17"
+  }
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Дом Сантехники">
+  <rect width="64" height="64" rx="17" fill="#151515"/>
+  <path d="M10 31 32 12l22 19" fill="none" stroke="#e0b574" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M17 29v23h30V29" fill="none" stroke="#e0b574" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M25 52V38h14v14" fill="none" stroke="#e0b574" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M46 16c-4.4 5.7-6.6 8.8-6.6 11.4a6.6 6.6 0 0 0 13.2 0C52.6 24.8 50.4 21.7 46 16Z" fill="#e0b574"/>
+</svg>

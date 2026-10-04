@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /_admin
+Disallow: /api/
+Disallow: /data/
+
+Sitemap: https://domsantehniki64.ru/sitemap.xml

@@ -1,0 +1,16 @@
+# Apache: custom not-found page and safe defaults for static delivery.
+ErrorDocument 404 /404.html
+Options -Indexes
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+  <FilesMatch "\.(css|js|jpg|jpeg|png|svg|ico|webmanifest)$">
+    Header set Cache-Control "public, max-age=3600"
+  </FilesMatch>
+  <FilesMatch "\.(html)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+<FilesMatch "^(\.env|server\.js|package\.json|leads\.json|vk-sync\.json)$">
+  Require all denied
+</FilesMatch>

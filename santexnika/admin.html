@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow, noarchive">
+  <meta name="theme-color" content="#111211">
+  <title>Новости и управление — Дом Сантехники</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+  <header class="admin-header">
+    <a class="admin-brand" href="/" aria-label="Вернуться на сайт"><span class="admin-mark">Д</span><span><strong>ДОМ САНТЕХНИКИ</strong><small>УПРАВЛЕНИЕ ПУБЛИКАЦИЯМИ</small></span></a>
+    <a class="back-link" href="/">← На сайт</a>
+  </header>
+  <main class="admin-main">
+    <section class="login-card" id="loginCard">
+      <div class="admin-eyebrow">Закрытая зона</div>
+      <h1>Вход <em>для администратора</em></h1>
+      <p>Управляйте новостями сайта и импортом публикаций сообщества ВКонтакте.</p>
+      <form id="loginForm">
+        <label for="adminPassword">Пароль администратора</label>
+        <input id="adminPassword" name="password" type="password" autocomplete="current-password" required placeholder="Введите пароль">
+        <button class="admin-button admin-button-gold" type="submit">Войти <span>→</span></button>
+        <p class="admin-error" id="loginError" role="alert" hidden></p>
+      </form>
+    </section>
+
+    <section class="dashboard" id="dashboard" hidden>
+      <div class="dashboard-head">
+        <div><div class="admin-eyebrow">Публикации и фильтры</div><h1>Новости <em>магазина</em></h1><p>Проверяйте, редактируйте и публикуйте материалы до появления на сайте.</p></div>
+        <div class="dashboard-actions"><button class="admin-button admin-button-outline" id="syncButton" type="button">↻ Синхронизировать VK</button><button class="admin-button admin-button-quiet" id="logoutButton" type="button">Выйти</button></div>
+      </div>
+      <div class="sync-status" id="syncStatus"><span class="status-dot"></span><span>Проверяем соединение…</span></div>
+      <div class="admin-columns">
+        <section class="news-management">
+          <div class="panel-head"><h2>Публикации</h2><span class="count-pill" id="newsCount">0</span></div>
+          <div class="admin-news-list" id="adminNewsList"></div>
+        </section>
+        <aside class="admin-aside">
+          <section class="admin-panel">
+            <div class="panel-head"><h2>Новая публикация</h2></div>
+            <form id="newNewsForm" class="new-news-form">
+              <label for="newTitle">Заголовок</label><input id="newTitle" name="title" maxlength="120" required placeholder="Например, новое поступление">
+              <label for="newCategory">Рубрика</label><input id="newCategory" name="category" maxlength="60" placeholder="Новинки">
+              <label for="newText">Текст</label><textarea id="newText" name="text" rows="7" maxlength="1800" required placeholder="Коротко расскажите о товаре, акции или доставке"></textarea>
+              <label class="checkbox-line"><input type="checkbox" name="visible" checked><span>Опубликовать сразу</span></label>
+              <button class="admin-button admin-button-gold" type="submit">Добавить публикацию <span>→</span></button>
+              <p class="admin-error" id="newNewsError" role="alert" hidden></p>
+            </form>
+          </section>
+          <section class="admin-panel tips-panel">
+            <div class="panel-head"><h2>Как работает импорт</h2></div>
+            <p>Сервер проверяет стену группы каждые 30 минут и при ручной синхронизации. На сайт попадают записи с ключевыми словами о сантехнике, товарах, скидках, доставке и поступлениях.</p>
+            <p>Список ключей можно менять в <code>VK_INCLUDE_KEYWORDS</code> в файле <code>.env</code>. Скрытая публикация останется в этом списке, но не будет видна посетителям.</p>
+            <a href="https://vk.ru/houseplumbers" target="_blank" rel="noopener">Открыть сообщество ↗</a>
+          </section>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <div class="admin-toast" id="adminToast" role="status" aria-live="polite"></div>
+  <script src="/admin.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+.env
+node_modules/
+data/leads.json
+data/vk-sync.json
+*.log
+.DS_Store
