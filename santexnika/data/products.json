@@ -1,0 +1,74 @@
+[
+  {
+    "id": "aura-l",
+    "name": "Акриловая ванна 1MARKA Aura L",
+    "category": "bath",
+    "price": 26924,
+    "priceLabel": "26 924 ₽",
+    "specs": "150 × 105 см · акрил · асимметричная",
+    "image": "/assets/catalog/bath-aura.jpg",
+    "imageAlt": "Акриловая ванна 1MARKA Aura L",
+    "badge": "Популярное",
+    "sourceUrl": "https://club223639597.orgs.biz/product/7974505"
+  },
+  {
+    "id": "dinamica",
+    "name": "Акриловая ванна 1MARKA Dinamica",
+    "category": "bath",
+    "price": 31588,
+    "priceLabel": "31 588 ₽",
+    "specs": "180 × 80 см · акрил · прямоугольная",
+    "image": "/assets/catalog/bath-dinamica.jpg",
+    "imageAlt": "Акриловая ванна 1MARKA Dinamica",
+    "badge": "Для просторной ванной",
+    "sourceUrl": "https://club223639597.orgs.biz/product/7974486"
+  },
+  {
+    "id": "viant-sicilia-60",
+    "name": "Тумба с раковиной VIANT Сицилия 60",
+    "category": "furniture",
+    "price": 20600,
+    "priceLabel": "20 600 ₽",
+    "specs": "60 см · 2 ящика · цвет капучино",
+    "image": "/assets/catalog/vanity-sicilia.jpg",
+    "imageAlt": "Тумба с раковиной VIANT Сицилия 60 в цвете капучино",
+    "badge": "Комплект",
+    "sourceUrl": "https://club223639597.orgs.biz/product/12317454"
+  },
+  {
+    "id": "abber-bequem",
+    "name": "Накладная раковина Abber Bequem",
+    "category": "basin",
+    "price": 13600,
+    "priceLabel": "13 600 ₽",
+    "specs": "Круглая · фаянс · матовое золото",
+    "image": "/assets/catalog/sink-abber.jpg",
+    "imageAlt": "Накладная раковина Abber Bequem, матовое золото",
+    "badge": "Акцентная деталь",
+    "sourceUrl": "https://club223639597.orgs.biz/product/12306019"
+  },
+  {
+    "id": "azario-larsi",
+    "name": "Смеситель Azario Ларси",
+    "category": "faucet",
+    "price": 5820,
+    "priceLabel": "5 820 ₽",
+    "specs": "Керамический картридж · матовое золото",
+    "image": "/assets/catalog/mixer-larsi.jpg",
+    "imageAlt": "Смеситель Azario Ларси в матовом золоте",
+    "badge": "Хит",
+    "sourceUrl": "https://club223639597.orgs.biz/product/12306003"
+  },
+  {
+    "id": "azario-lursy",
+    "name": "Душевая система Azario Lursy",
+    "category": "shower",
+    "price": 20970,
+    "priceLabel": "20 970 ₽",
+    "specs": "Верхний квадратный душ · отделка золото",
+    "image": "/assets/catalog/shower-lursy.jpg",
+    "imageAlt": "Душевая система Azario Lursy",
+    "badge": "В наличии уточняйте",
+    "sourceUrl": "https://club223639597.orgs.biz/product/12305992"
+  }
+]
