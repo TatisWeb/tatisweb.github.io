@@ -1,4 +1,22 @@
 <!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Перенаправление...</title>
+    
+    <!-- Мгновенный редирект: выполняется сразу при разборе head -->
+    <script>
+        // replace() заменяет текущую запись в истории браузера, 
+    // чтобы пользователь не мог нажать "Назад" и снова попасть на страницу редиректа
+    window.location.replace("https://tatisweb.ru");
+    </script>
+    
+    <!-- Для страховки, если JavaScript отключен (поисковые роботы и редкие пользователи) -->
+    <meta http-equiv="refresh" content="0; url=https://tatisweb.ru">
+    
+    <!-- Канонический тег для SEO, чтобы избежать дублей -->
+    <link rel="canonical" href="https://tatisweb.ru" />
+
 <html lang="ru" dir="ltr" itemscope itemtype="https://schema.org/WebPage" prefix="og: http://ogp.me/ns#">
 
 <head>
